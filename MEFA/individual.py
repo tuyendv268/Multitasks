@@ -18,7 +18,8 @@ class individual:
     def update_skill_factor(self):
         factorial_ranks = np.asarray(self.factorial_ranks)
         self.skill_factors = np.argmin(factorial_ranks)
-        self.scalar_fitnesss = round(1 / (1 + np.min(factorial_ranks)), 5)
+        self.scalar_fitnesss = 1 / (1 + np.min(factorial_ranks))
+        self.factorial_ranks[abs(1-self.skill_factors)] = 999999
     
     def get_fitness(self, index):
         return self.fitness[index]

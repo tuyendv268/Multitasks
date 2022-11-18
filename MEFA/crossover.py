@@ -58,6 +58,9 @@ class Crossover:
                 turn = 0
         child_1.gene[-1] = 1
         child_2.gene[-1] = 1
+        
+        child_1.skill_factors = parent_1.skill_factors
+        child_2.skill_factors = parent_1.skill_factors
 
         return child_1, child_2
     @classmethod
@@ -74,3 +77,59 @@ class Crossover:
         individual.gene = gene
         return individual
 
+    @classmethod
+    def random_index(cls, length):
+        while(True):
+            start = random.randint(1, length)
+            end = random.randint(1, length)
+            if start != end:
+                break
+        
+        if start > end:
+            return end, start
+        return start, end
+    
+    @classmethod
+    def crossover_OX(cls, parrent_1, parrent_2):
+        p1, p2 = parrent_1.gene[1:-1], parrent_2.gene[1:-1]
+        length = len(p1)
+        start, end = cls.random_index(length-2)
+        # print(f'start: {start} - end: {end}')
+
+        c1, c2 = [-1]*length, [-1]*length
+        c1[start:end+1] = p2[start:end+1]
+        c2[start:end+1] = p1[start:end+1]
+        
+        total = end - start + 1
+        index=end+1
+        while(True):    
+            for i in p2:
+                if i in c1:
+                    continue
+                c1[index] = i
+                index += 1
+                if index >= length:
+                    index = index % length
+                total += 1
+            if total == length:
+                break
+        
+        total = end - start + 1
+        index=end+1
+
+        while(True):    
+            for i in p1:
+                if i in c2:
+                    continue
+                c2[index] = i
+                index += 1
+                if index >= length:
+                    index = index % length
+                total += 1
+            if total == length:
+                break
+        c1, c2 = [1] + c1 + [1],[1] + c2 + [1]
+        child_1 = individual(gene=c1)
+        child_2 = individual(gene=c2)
+
+        return child_1, child_2

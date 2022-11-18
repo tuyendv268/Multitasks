@@ -33,30 +33,29 @@ class TSP:
         if len(gene)-1 == length:
             for i in range(length):
                 total += self.map[gene[i]][gene[i+1]]
-                
             return round(total,3)
         else:
             solution = gene.copy()
             for i in range(length+1, len(gene)):
                 solution.remove(i)
-                
             for i in range(length):
                 total += self.map[solution[i]][solution[i+1]]
                 
             return round(total,3)
     
-    # def calculate_fitness(self, gene):
-    #     length = len(gene)
-    #     total = 0
-    #     for i in range(length-1):
-    #         total += self.map[gene[i]][gene[i+1]]
-        
-    #     return round(total,3)
-    
     def get_fitness(self, individual):
         return individual.get_fitness(self.idx_probl)
 
-    def evaluate(self, population):
+    def init_factorial_rank(self, population):
+        tmp_population =  sorted(population,key=self.get_fitness)
+        
+        for idx, ele in enumerate(tmp_population):
+            ele.set_factorial_rank(self.idx_probl, idx)
+        
+        return population
+    
+    def update_factorial_rank(self, population):
+        # tmp_population = [ele for ele in population.copy() if ele.]
         tmp_population =  sorted(population,key=self.get_fitness)
         
         for idx, ele in enumerate(tmp_population):
