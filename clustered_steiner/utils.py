@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import pandas as pd
+from collections import Counter
 
 def load_data(path):
     with open(path, "r") as tmp:
@@ -64,6 +65,27 @@ def convert2set(clusters):
     
     return new_clusters
 
+def remove_non_required_vertex_with_degree(clusteres, graphs, represent_local_vertexs):
+    #  remove non-require vextex in clusters
+    new_graph = []
+    for index in range(len(clusteres)):
+        cluster = set(clusteres[index])
+        graph = graphs[index]
+        
+        # count degree
+        degrees = Counter([v for e in graphs[index] for v in e])
+        remove_vertexs = set(
+                [key for key, value in degrees.items() 
+                if (value==1 and key not in cluster and key != represent_local_vertexs[index])]
+            )
+        # print(remove_vertexs)
+        
+        for edge in graph:
+            if edge[0] in remove_vertexs or edge[1] in remove_vertexs:
+                continue
+            new_graph.append(edge)
+    return new_graph
+
 def calculate_fitness(individual, clusters, graph):
     tmp_clusters = convert2set(clusters)
     steiner_vertexs = list(individual.steiner_vertexs)
@@ -99,7 +121,13 @@ def calculate_fitness(individual, clusters, graph):
     # find MST on local clustered
     for cluster in tmp_clusters:
         cluster = list(cluster)
-        clustered_steiners += find_MST(graph[cluster, :][:, cluster], cluster).tolist()
+        clustered_steiners.append(find_MST(graph[cluster, :][:, cluster], cluster).tolist())
+        
+    clustered_steiners = remove_non_required_vertex_with_degree(
+        clusteres=clusters,
+        graphs=clustered_steiners,
+        represent_local_vertexs=represent_local_vertexs
+    )
 
     # print(f"1 represent_local_vertexs: {represent_local_vertexs}")
     tmp_clusters = convert2set(clusters)

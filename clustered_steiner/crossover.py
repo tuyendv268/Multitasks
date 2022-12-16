@@ -17,10 +17,19 @@ class CrossOver():
     def crossover(cls, parent_1, parent_2):
         cls.check_steiner_vertexs(parent_1, parent_2)
         length = len(parent_1.gene)
-        crossover_index = random.randint(1, length-1)
         
-        gene_1 = parent_1.gene[0:crossover_index] + parent_2.gene[crossover_index:]
-        cluster_index_1 = parent_1.cluster_index[0:crossover_index] + parent_2.cluster_index[crossover_index:]
+        crossover_index_start, crossover_index_end = None, None
+        while crossover_index_end == crossover_index_start:
+            crossover_index_start = random.randint(1, length-1)
+            crossover_index_end = random.randint(1, length-1)
+            
+        if crossover_index_start > crossover_index_end:
+            tmp = crossover_index_start
+            crossover_index_start = crossover_index_end
+            crossover_index_end = tmp
+        
+        gene_1 = parent_1.gene[0:crossover_index_start] + parent_2.gene[crossover_index_start:crossover_index_end] + parent_1.gene[crossover_index_end:]
+        cluster_index_1 = parent_1.cluster_index[0:crossover_index_start] + parent_2.cluster_index[crossover_index_start:crossover_index_end] + parent_1.cluster_index[crossover_index_end:]
         steiner_vertexs_1 = parent_1.steiner_vertexs
         
         child_1 = individual(
@@ -29,8 +38,8 @@ class CrossOver():
             cluster_index=cluster_index_1
         )
         
-        gene_2 = parent_2.gene[0:crossover_index] + parent_1.gene[crossover_index:]
-        cluster_index_2 = parent_2.cluster_index[0:crossover_index] + parent_1.cluster_index[crossover_index:]
+        gene_2 = parent_2.gene[0:crossover_index_start] + parent_1.gene[crossover_index_start:crossover_index_end] + parent_2.gene[crossover_index_end:]
+        cluster_index_2 = parent_2.cluster_index[0:crossover_index_start] + parent_1.cluster_index[crossover_index_start:crossover_index_end] + parent_2.cluster_index[crossover_index_end:]
         steiner_vertexs_2 = parent_1.steiner_vertexs
         
         child_2 = individual(
