@@ -87,7 +87,7 @@ for _ in _tqdm:
             fitness_1 = problems[0].calculate_fitness(ele)
             ele.fitness = [fitness_1, 999999]
         else:
-            fitness_2 = problems[0].calculate_fitness(ele)
+            fitness_2 = problems[1].calculate_fitness(ele)
             ele.fitness = [999999, fitness_2]
     
     population = population + new_population
@@ -100,20 +100,20 @@ for _ in _tqdm:
     population.sort(key=lambda individual:individual.scalar_fitness, reverse=True)
     population = population[0:population_size]
     
-    _tqdm.set_postfix({
-        "fitness":population[0].fitness
-    })
+    # _tqdm.set_postfix({
+    #     "fitness":population[0].fitness
+    # })
     
-    # min_1 = 9999999
-    # min_2 = 9999999
-    # for indi in population:
-    #     # print(indi.to_string())
-    #     min_1 = min(min_1, indi.fitness[0])
-    #     min_2 = min(min_2, indi.fitness[1])
-    #     min_glob_1 = min(min_1, min_glob_1)
-    #     min_glob_2 = min(min_2, min_glob_2)
+    min_1 = 9999999
+    min_2 = 9999999
+    for indi in population:
+        # print(indi.to_string())
+        min_1 = min(min_1, indi.fitness[0])
+        min_2 = min(min_2, indi.fitness[1])
+        min_glob_1 = min(min_1, min_glob_1)
+        min_glob_2 = min(min_2, min_glob_2)
     
-    # _tqdm.set_postfix({"task_1":min_glob_1, "task_2":min_glob_2})
+    _tqdm.set_postfix({"task_1":min_glob_1, "task_2":min_glob_2})
 
 # for i in population:
 #     print(i.fitness)
