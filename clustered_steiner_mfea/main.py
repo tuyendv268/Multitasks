@@ -72,12 +72,25 @@ for _ in _tqdm:
     
     while(len(tmp_population) >= 2):
         parent = random.sample(list(tmp_population), 2)
-        rand = random.randint(0, 100) / 100
+        rand = random.randint(0, 100) / 100.0
         if parent[0].skill_factors == parent[1].skill_factors or rand < rmp:
             child_1, child_2 = CrossOver.crossover(*parent)
+            
+            rand = random.randint(0, 100) / 100.0
+            if rand > 0.5:
+                child_1.skill_factors = 0
+            else:
+                child_1.skill_factors = 1
+                
+            rand = random.randint(0, 100) / 100.0
+            if rand > 0.5:
+                child_2.skill_factors = 0
+            else:
+                child_2.skill_factors = 1
         else:
             child_1 = CrossOver.mutate(parent[0])
-            child_2 = CrossOver.mutate(parent[1])
+            child_2 = CrossOver.mutate(parent[1])           
+            
         new_population.append(child_1)
         new_population.append(child_2)
         tmp_population -= set(parent)
@@ -115,5 +128,5 @@ for _ in _tqdm:
     
     _tqdm.set_postfix({"task_1":min_glob_1, "task_2":min_glob_2})
 
-# for i in population:
-#     print(i.fitness)
+    # for index ,i in enumerate(population):
+    #     print(index, i.factorial_ranks, i.scalar_fitness)

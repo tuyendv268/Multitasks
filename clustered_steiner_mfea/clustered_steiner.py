@@ -30,7 +30,7 @@ class Clustered_Steiner():
             ele.set_factorial_rank(self.idx, idx)
         
         return population
-    
+        
     def parse_individual(self, individual):
         _gene = individual.gene[self.steiner_vertexs]
         _steiner_vertexs= self.steiner_vertexs
@@ -39,6 +39,7 @@ class Clustered_Steiner():
         for index in range(len(_cluster_index)):
             if _cluster_index[index] >= self.num_cluster:
                 _gene[index] = 0
+                _cluster_index[index] = -1
         
         return _gene, _steiner_vertexs, _cluster_index
         

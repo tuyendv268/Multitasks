@@ -6,7 +6,7 @@ class individual():
         self.gene = gene
         self.cluster_index = cluster_index
         
-        self.factorial_ranks = [-1, -1]
+        self.factorial_ranks = [None, None]
         self.scalar_fitness = None
         self.skill_factors = None
     
@@ -16,8 +16,10 @@ class individual():
     def update_skill_factor(self):
         factorial_ranks = np.asarray(self.factorial_ranks)
         self.skill_factors = np.argmin(factorial_ranks)
+        # print(factorial_ranks)
+        # print(np.min(factorial_ranks))
         self.scalar_fitness = 1/(1+np.min(factorial_ranks))
-        self.factorial_ranks[abs(1-self.skill_factors)] = 9999999
+        self.factorial_ranks[1-self.skill_factors] = 9999999
     
     def set_fitness(self, fitness):
         self.fitness = fitness
