@@ -38,8 +38,7 @@ class Clustered_Steiner():
         
         for index in range(len(_cluster_index)):
             if _cluster_index[index] >= self.num_cluster:
-                _gene[index] = 0
-                _cluster_index[index] = -1
+                _cluster_index[index] = _cluster_index[index] - self.num_cluster
         
         return _gene, _steiner_vertexs, _cluster_index
         

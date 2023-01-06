@@ -8,7 +8,7 @@ import pickle as pkl
 import numpy as np
 import os
 
-random.seed(1)
+random.seed(26)
 config_path = "config/config.ini"
 config = configparser.ConfigParser()
 config.read(config_path)
