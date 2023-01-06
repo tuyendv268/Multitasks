@@ -27,7 +27,7 @@ def parse_clusters(lines):
     clusters = lines[-num_clusters:]
     clusters = [line.replace("\n", "") for line in clusters]
     clusters = [line.split()[1:-1] for line in clusters]
-    clusters = [[int(col) for col in line] for line in clusters]
+    clusters = [[int(col)-1 for col in line] for line in clusters]
     clusters = tuple([tuple(line) for line in clusters])
     
     return clusters
@@ -106,7 +106,7 @@ def calculate_fitness(individual, clusters, graph):
             represent_local_vertexs[cluster_index] = steiner_vertexs[index]
             # tmp_clusters[cluster_index].add(steiner_vertexs[index])
         else:
-            if random.randint(0, 100) / 100.0 > 0.8:
+            if random.randint(0, 100) / 100.0 > 0.9:
                 represent_local_vertexs[cluster_index] = steiner_vertexs[index]
     
     # print("represent_local_vertexs: ", represent_local_vertexs)

@@ -40,7 +40,7 @@ for seed in range(30):
         )
         ele.set_fitness(fitness)
 
-    _tqdm = tqdm(range(NUM_GENERATION))
+    _tqdm = tqdm(range(NUM_GENERATION), desc=f"seed={seed}")
     res_tmp = []
     for _ in _tqdm:
         news_population = []
