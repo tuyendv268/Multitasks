@@ -146,10 +146,9 @@ def calculate_fitness(_steiner_vertexs, _cluster_index, _gene, clusters, graph):
 
         if represent_local_vertexs[cluster_index] == -1:
             represent_local_vertexs[cluster_index] = steiner_vertexs[index]
-            # tmp_clusters[cluster_index].add(steiner_vertexs[index])
         else:
-            if random.randint(0, 100) / 100.0 > 0.9:
-                represent_local_vertexs[cluster_index] = steiner_vertexs[index]
+            # if random.randint(0, 100) / 100.0 > 0.5:
+            represent_local_vertexs[cluster_index] = steiner_vertexs[index]
     
     # print("represent_local_vertexs: ", represent_local_vertexs)
     for index, vertex in enumerate(represent_local_vertexs):

@@ -88,8 +88,8 @@ for _ in _tqdm:
             else:
                 child_2.skill_factors = 1
         else:
-            child_1 = CrossOver.mutate(parent[0])
-            child_2 = CrossOver.mutate(parent[1])           
+            child_1 = CrossOver.mutate(parent[0], num_cluster=num_cluster)
+            child_2 = CrossOver.mutate(parent[1], num_cluster=num_cluster)           
             
         new_population.append(child_1)
         new_population.append(child_2)

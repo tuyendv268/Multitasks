@@ -58,11 +58,14 @@ class CrossOver():
         return child_1, child_2
     
     @classmethod
-    def mutate(cls, indi):
-        new_gen = list(indi.gene)
+    def mutate(cls, indi, num_cluster):
         length = len(indi.gene)
         
         index = random.randint(0, length-1)
-        new_gen[index] = 1 - new_gen[index]
-        indi.gene = np.array(new_gen)
+        if indi.gene[index] == 0:
+            indi.gene[index] = 1
+            indi.cluster_index[index] = random.randint(0, num_cluster-1)
+        else:
+            indi.gene[index] = 0
+            indi.cluster_index[index] = -1
         return indi
