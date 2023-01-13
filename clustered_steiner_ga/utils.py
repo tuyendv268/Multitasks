@@ -65,25 +65,24 @@ def convert2set(clusters):
     
     return new_clusters
 
-def remove_non_required_vertex_with_degree(clusteres, graphs, represent_local_vertexs):
-    #  remove non-require vextex in clusters
+def remove_non_required_vertex_with_degree(clusteres, graphs):
+    clusteres = set([v for clust in clusteres for v in clust])
+    
+    tmp_graphs = []
+    for edge in graphs:
+        tmp_graphs.append(edge[0:2])    
     new_graph = []
-    for index in range(len(clusteres)):
-        cluster = set(clusteres[index])
-        graph = graphs[index]
-        
-        # count degree
-        degrees = Counter([v for e in graphs[index] for v in e])
-        remove_vertexs = set(
-                [key for key, value in degrees.items() 
-                if (value==1 and key not in cluster and key != represent_local_vertexs[index])]
-            )
-        # print(remove_vertexs)
-        
-        for edge in graph:
-            if edge[0] in remove_vertexs or edge[1] in remove_vertexs:
-                continue
-            new_graph.append(edge)
+    
+    degrees = Counter([v for e in tmp_graphs for v in e])
+    remove_vertexs = set(
+            [key for key, value in degrees.items() 
+            if (value==1 and key not in clusteres)]
+        )
+    
+    for edge in graphs:
+        if edge[0] in remove_vertexs or edge[1] in remove_vertexs:
+            continue
+        new_graph.append(edge)
     return new_graph
 
 def calculate_fitness(individual, clusters, graph):
@@ -91,12 +90,12 @@ def calculate_fitness(individual, clusters, graph):
     steiner_vertexs = list(individual.steiner_vertexs)
     cluster_indexs = list(individual.cluster_index)
     represent_local_vertexs = [-1]*len(clusters)
+# def calculate_fitness(_steiner_vertexs, _cluster_index, _gene, clusters, graph):
+    # tmp_clusters = convert2set(clusters)
+    # steiner_vertexs = list(_steiner_vertexs)
+    # cluster_indexs = list(_cluster_index)
+    # represent_local_vertexs = [-1]*len(clusters)
     
-    # print("gene: ", individual.gene)
-    # print("cluster_indexs: ", cluster_indexs)
-    # print("steiner_vertexs: ", steiner_vertexs)
-    # print("clusters: ", tmp_clusters)
-
     for index, is_select in enumerate(individual.gene):
         if is_select == 0 or cluster_indexs[index] == -1:
             continue
@@ -104,17 +103,14 @@ def calculate_fitness(individual, clusters, graph):
 
         if represent_local_vertexs[cluster_index] == -1:
             represent_local_vertexs[cluster_index] = steiner_vertexs[index]
-            # tmp_clusters[cluster_index].add(steiner_vertexs[index])
         else:
-            if random.randint(0, 100) / 100.0 > 0.9:
-                represent_local_vertexs[cluster_index] = steiner_vertexs[index]
+            represent_local_vertexs[cluster_index] = steiner_vertexs[index]
     
     # print("represent_local_vertexs: ", represent_local_vertexs)
     for index, vertex in enumerate(represent_local_vertexs):
         if vertex == -1:
             continue
         tmp_clusters[index].add(vertex)
-    # print("news tmp_clusters: ", tmp_clusters)
 
     clustered_steiners = []
 
@@ -122,30 +118,20 @@ def calculate_fitness(individual, clusters, graph):
     for cluster in tmp_clusters:
         cluster = list(cluster)
         clustered_steiners.append(find_MST(graph[cluster, :][:, cluster], cluster).tolist())
-        
-    clustered_steiners = remove_non_required_vertex_with_degree(
-        clusteres=clusters,
-        graphs=clustered_steiners,
-        represent_local_vertexs=represent_local_vertexs
-    )
 
-    # print(f"1 represent_local_vertexs: {represent_local_vertexs}")
     tmp_clusters = convert2set(clusters)
     for index, represent in enumerate(represent_local_vertexs):
         if represent != -1:
             continue
-        represent_local_vertexs[index] = random.choice(list(tmp_clusters[index]))
-    # print(f"2 represent_local_vertexs: {represent_local_vertexs}")
+        # represent_local_vertexs[index] = random.choice(list(tmp_clusters[index]))
+        represent_local_vertexs[index] = list(tmp_clusters[index])[0]
     
     # sample 1 dinh dai dien trong cac dinh steiner co chung 1 cluster index
     tmp = pd.DataFrame({
         "steiner_vertex":steiner_vertexs,
         "cluster_index":cluster_indexs
     })
-    
-    # print("steiner_vertexs: ", steiner_vertexs)
-    # print("cluster_index: ", cluster_indexs)
-    
+        
     represent_steiner_vertexs = []
 
     for name, group in tmp.groupby("cluster_index"):
@@ -154,13 +140,17 @@ def calculate_fitness(individual, clusters, graph):
             continue
         # represent_steiner_vertexs += group.sample(1)["steiner_vertex"].tolist()
     
-    # print("represent_steiner_vertexs: ", represent_steiner_vertexs)
-    # print("represent_local_vertexs: ", represent_local_vertexs)
-    # print()
-
     news_vertexs = list(set(represent_steiner_vertexs + represent_local_vertexs))
+    clustered_steiners = [v for e in clustered_steiners for v in e]
+    
     clustered_steiners += find_MST(graph[news_vertexs, :][:, news_vertexs], news_vertexs).tolist()
     
+    tmp_clusters = convert2set(clusters)
+    clustered_steiners = remove_non_required_vertex_with_degree(
+        clusteres=tmp_clusters,
+        graphs=clustered_steiners
+    )
+
     total = 0
     for i in clustered_steiners:
         total += graph[i[0], i[1]]
