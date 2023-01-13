@@ -1,7 +1,7 @@
 import random
 from individual import individual
 import numpy as np
-
+import copy
 class CrossOver():
     def __init__(self) -> None:
         pass
@@ -60,12 +60,12 @@ class CrossOver():
     @classmethod
     def mutate(cls, indi, num_cluster):
         length = len(indi.gene)
-        
+        new_indi = copy.deepcopy(indi)
         index = random.randint(0, length-1)
-        if indi.gene[index] == 0:
-            indi.gene[index] = 1
-            indi.cluster_index[index] = random.randint(0, num_cluster-1)
+        if new_indi.gene[index] == 0:
+            new_indi.gene[index] = 1
+            new_indi.cluster_index[index] = random.randint(0, num_cluster-1)
         else:
-            indi.gene[index] = 0
-            indi.cluster_index[index] = -1
-        return indi
+            new_indi.gene[index] = 0
+            new_indi.cluster_index[index] = -1
+        return new_indi
